@@ -193,8 +193,9 @@ const homePage = `
 `;
 
 const server = http.createServer((req, res) => {
+
   // Route: /docs → serve docs.html
-  if (req.url === '/docs') {
+  if (req.url === '/docs' || req.url === '/docs/') {
     const docsPath = path.join(__dirname, 'docs.html');
     fs.readFile(docsPath, (err, data) => {
       if (err) {
@@ -211,8 +212,4 @@ const server = http.createServer((req, res) => {
   // Route: / → serve home page
   res.writeHead(200, { 'Content-Type': 'text/html' });
   res.end(homePage);
-});
-
-server.listen(port, () => {
-  console.log(`Gebeta LMS running on port ${port}`);
 });
