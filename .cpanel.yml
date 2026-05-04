@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/gebetaya/lms
+    - /bin/cp -R ./* $DEPLOYPATH
