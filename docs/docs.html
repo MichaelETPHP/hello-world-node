@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gebeta LMS — Developer Documentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --gray-100: #f5f5f5;
+      --gray-200: #e8e8e8;
+      --gray-300: #cccccc;
+      --gray-500: #888888;
+      --gray-700: #444444;
+      --gray-900: #111111;
+      --code-bg: #0d0d0d;
+      --code-border: #2a2a2a;
+      --accent: #000000;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* TOP NAV */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 100;
+      border-bottom: 1px solid #222;
+    }
+
+    .topbar-brand {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .topbar-brand span { color: #888; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .breadcrumb a {
+      color: var(--white);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: #aaa; }
+    .breadcrumb .sep { color: #444; }
+    .breadcrumb .current { color: #888; }
+
+    /* LAYOUT */
+    .layout {
+      display: flex;
+      margin-top: 56px;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--gray-100);
+      border-right: 1px solid var(--gray-200);
+      padding: 32px 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+
+    .sidebar-section {
+      margin-bottom: 8px;
+    }
+
+    .sidebar-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gray-500);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 24px 8px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 8px 24px;
+      font-size: 13px;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+
+    .sidebar a:hover {
+      background: var(--gray-200);
+      color: var(--black);
+      border-left-color: var(--black);
+    }
+
+    .sidebar a.active {
+      background: var(--white);
+      color: var(--black);
+      font-weight: 600;
+      border-left-color: var(--black);
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      flex: 1;
+      padding: 48px 64px;
+      max-width: 860px;
+    }
+
+    /* SECTIONS */
+    .doc-section {
+      margin-bottom: 64px;
+      padding-bottom: 64px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .doc-section:last-child {
+      border-bottom: none;
+    }
+
+    /* SECTION HEADER */
+    .section-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-500);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: 40px;
+      letter-spacing: -0.3px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--black);
+      display: inline-block;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      margin-top: 28px;
+      color: var(--gray-900);
+    }
+
+    p {
+      color: var(--gray-700);
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    /* INTRO BLOCK */
+    .intro-block {
+      background: var(--black);
+      color: var(--white);
+      padding: 32px;
+      border-radius: 4px;
+      margin-bottom: 32px;
+    }
+
+    .intro-block p {
+      color: #aaa;
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* CODE BLOCKS */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 4px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 16px 0 24px;
+      position: relative;
+    }
+
+    pre code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: #e8e8e8;
+      line-height: 1.7;
+    }
+
+    code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--black);
+    }
+
+    pre code { background: none; border: none; padding: 0; color: #e8e8e8; }
+
+    /* STEP BLOCKS */
+    .steps { counter-reset: step; }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 32px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--black);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .step-body { flex: 1; }
+    .step-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .step-body p { margin-bottom: 8px; }
+
+    /* CALLOUT BOXES */
+    .callout {
+      border-left: 4px solid var(--black);
+      background: var(--gray-100);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .callout.warning {
+      border-left-color: #000;
+      background: #fff8e1;
+    }
+
+    .callout.success {
+      border-left-color: #000;
+      background: #f0f7f0;
+    }
+
+    .callout strong {
+      display: block;
+      font-size: 12px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: var(--black);
+    }
+
+    .callout p { margin: 0; font-size: 14px; color: var(--gray-700); }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th {
+      background: var(--black);
+      color: var(--white);
+      padding: 12px 16px;
+      text-align: left;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    tr:hover td { background: var(--gray-100); }
+
+    td code { font-size: 12px; }
+
+    /* CHEAT SHEET */
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .cheat-item {
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .cheat-cmd {
+      background: var(--code-bg);
+      padding: 10px 14px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: #e8e8e8;
+    }
+
+    .cheat-desc {
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--gray-700);
+      background: var(--gray-100);
+    }
+
+    /* WORKFLOW DIAGRAM */
+    .workflow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .wf-box {
+      flex-shrink: 0;
+      background: var(--black);
+      color: var(--white);
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .wf-box.light {
+      background: var(--gray-100);
+      color: var(--black);
+      border: 1px solid var(--gray-200);
+    }
+
+    .wf-arrow {
+      flex-shrink: 0;
+      padding: 0 8px;
+      color: var(--gray-500);
+      font-size: 18px;
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      background: var(--black);
+      color: var(--white);
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    .badge.outline {
+      background: transparent;
+      color: var(--black);
+      border: 1px solid var(--black);
+    }
+
+    /* FOOTER */
+    .doc-footer {
+      background: var(--black);
+      color: #666;
+      text-align: center;
+      padding: 32px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      margin-top: 64px;
+    }
+
+    .doc-footer a { color: #888; text-decoration: none; }
+    .doc-footer a:hover { color: var(--white); }
+
+    /* SCROLL TO TOP */
+    .scroll-top {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      width: 40px;
+      height: 40px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 32px 24px; }
+      .cheat-grid { grid-template-columns: 1fr; }
+      .workflow { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav class="topbar">
+  <a href="/" class="topbar-brand">GEBETA<span>LMS</span></a>
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span class="sep">/</span>
+    <span class="current">Documentation</span>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Getting Started</div>
+      <a href="#intro" class="active">Introduction</a>
+      <a href="#git-setup">Git Setup</a>
+      <a href="#github-setup">GitHub Setup</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Deployment</div>
+      <a href="#cpanel-nodejs">cPanel Node.js</a>
+      <a href="#subdomain">Subdomain Setup</a>
+      <a href="#git-version-control">Git Version Control</a>
+      <a href="#permissions">Permissions Fix</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Daily Workflow</div>
+      <a href="#workflow">Push & Deploy</a>
+      <a href="#commands">Git Cheat Sheet</a>
+      <a href="#troubleshooting">Troubleshooting</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- INTRO -->
+    <section class="doc-section" id="intro">
+      <div class="section-tag">01 — Introduction</div>
+      <h1>Developer Documentation</h1>
+      <div class="intro-block">
+        <p>This guide covers everything you need to deploy a Node.js application to cPanel using GitHub for version control — from first-time Git setup to live deployment on a custom subdomain.</p>
+      </div>
+
+      <h2>The Full Workflow</h2>
+      <div class="workflow">
+        <div class="wf-box">Laptop<br><small style="font-weight:300;font-size:10px">Write Code</small></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-box light">GitHub<br><small style="font-size:10px">git push</small></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-box light">cPanel<br><small style="font-size:10px">git pull</small></div>
+        <div class="wf-arrow">→</div>
+        <div class="wf-box">Live Site<br><small style="font-weight:300;font-size:10px">subdomain</small></div>
+      </div>
+
+      <table>
+        <tr>
+          <th>Tool</th>
+          <th>Purpose</th>
+        </tr>
+        <tr><td><code>Git</code></td><td>Version control — tracks all code changes</td></tr>
+        <tr><td><code>GitHub</code></td><td>Cloud storage for your code repository</td></tr>
+        <tr><td><code>cPanel</code></td><td>Web hosting control panel</td></tr>
+        <tr><td><code>Node.js Selector</code></td><td>Runs your Node.js app on cPanel</td></tr>
+        <tr><td><code>Subdomain</code></td><td>Custom URL pointing to your app folder</td></tr>
+      </table>
+    </section>
+
+    <!-- GIT SETUP -->
+    <section class="doc-section" id="git-setup">
+      <div class="section-tag">02 — Git Setup</div>
+      <h1>Install & Configure Git</h1>
+
+      <h2>Install Git on Windows</h2>
+      <p>Download Git from <strong>git-scm.com</strong> and install with default settings. Verify installation:</p>
+      <pre><code>git --version
+# Expected output: git version 2.x.x</code></pre>
+
+      <h2>Configure Your Identity</h2>
+      <p>Run these once — Git uses this info for every commit you make:</p>
+      <pre><code>git config --global user.name "Your Name"
+git config --global user.email "your@email.com"</code></pre>
+
+      <p>Verify your config:</p>
+      <pre><code>git config --list</code></pre>
+
+      <h2>Generate SSH Key</h2>
+      <p>SSH lets you connect to GitHub without typing your password every time.</p>
+      <pre><code># Generate SSH key
+ssh-keygen -t ed25519 -C "your@email.com"
+
+# Press Enter 3 times (accept all defaults)</code></pre>
+
+      <h2>Copy Your Public Key</h2>
+      <pre><code># Windows Command Prompt
+type %USERPROFILE%\.ssh\id_ed25519.pub
+
+# Windows PowerShell
+Get-Content ~/.ssh/id_ed25519.pub
+
+# Open in Notepad
+notepad %USERPROFILE%\.ssh\id_ed25519.pub</code></pre>
+
+      <div class="callout">
+        <strong>Your key looks like this</strong>
+        <p>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... your@email.com — copy the entire line including ssh-ed25519 at the start and your email at the end.</p>
+      </div>
+
+      <h2>Remove Stored Password (Security)</h2>
+      <p>Never store your password in Git config:</p>
+      <pre><code>git config --global --unset user.password</code></pre>
+    </section>
+
+    <!-- GITHUB SETUP -->
+    <section class="doc-section" id="github-setup">
+      <div class="section-tag">03 — GitHub</div>
+      <h1>Connect to GitHub</h1>
+
+      <h2>Add SSH Key to GitHub</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Go to GitHub Settings</h4>
+            <p>Login to <strong>github.com</strong> → click profile picture → Settings</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>SSH and GPG Keys</h4>
+            <p>Left sidebar → SSH and GPG keys → click <strong>New SSH key</strong></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Add Your Key</h4>
+            <p>Title: <code>My Laptop</code> &nbsp; Key type: <code>Authentication Key</code> &nbsp; Paste your key → Save</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Test Connection</h4>
+            <pre><code>ssh -T git@github.com
+# Expected: Hi YourName! You've successfully authenticated.</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Create a Repository</h2>
+      <p>On github.com → click <strong>+</strong> → New repository → fill in name → set Private → click Create.</p>
+
+      <h2>Push Your Project to GitHub</h2>
+      <pre><code># Navigate to your project folder
+cd /path/to/your/project
+
+# Create .gitignore first
+echo "node_modules/" >> .gitignore
+echo ".env" >> .gitignore
+echo "*.log" >> .gitignore
+
+# Initialize, commit and push
+git init
+git add .
+git commit -m "initial commit"
+git branch -M main
+git remote add origin git@github.com:yourusername/your-repo.git
+git push -u origin main</code></pre>
+
+      <div class="callout success">
+        <strong>✓ Done</strong>
+        <p>Refresh your GitHub repo page — your code is now live on GitHub.</p>
+      </div>
+    </section>
+
+    <!-- CPANEL NODE.JS -->
+    <section class="doc-section" id="cpanel-nodejs">
+      <div class="section-tag">04 — cPanel</div>
+      <h1>cPanel Node.js Setup</h1>
+
+      <h2>Create Node.js Application</h2>
+      <p>Login to cPanel → search <strong>Node.js</strong> → click <strong>Create Application</strong></p>
+
+      <table>
+        <tr><th>Field</th><th>Value</th></tr>
+        <tr><td>Node.js version</td><td>24.x (recommended)</td></tr>
+        <tr><td>Application mode</td><td>Production</td></tr>
+        <tr><td>Application root</td><td><code>your-app-folder</code></td></tr>
+        <tr><td>Application URL</td><td><code>yoursubdomain.yourdomain.com</code></td></tr>
+        <tr><td>Startup file</td><td><code>app.js</code></td></tr>
+      </table>
+
+      <div class="callout warning">
+        <strong>⚠ Important</strong>
+        <p>The Application root folder name must match the folder your subdomain points to. Check cPanel → Domains to verify.</p>
+      </div>
+
+      <h2>Your app.js Must Use process.env.PORT</h2>
+      <p>cPanel assigns a random port — never hardcode port 3000:</p>
+      <pre><code>const http = require('http');
+
+const port = process.env.PORT || 3000; // ← always use this
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.end('&lt;h1&gt;Hello World&lt;/h1&gt;');
+});
+
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});</code></pre>
+
+      <h2>Check Generated .htaccess</h2>
+      <p>After creating the app, cPanel auto-generates a <code>.htaccess</code> file. Verify it via cPanel Terminal:</p>
+      <pre><code>cat /home/yourusername/your-app-folder/.htaccess
+
+# Should show:
+# PassengerAppRoot "/home/yourusername/your-app-folder"
+# PassengerBaseURI "/"
+# PassengerNodejs "/home/yourusername/nodevenv/your-app-folder/24/bin/node"
+# PassengerAppType node
+# PassengerStartupFile app.js</code></pre>
+    </section>
+
+    <!-- SUBDOMAIN -->
+    <section class="doc-section" id="subdomain">
+      <div class="section-tag">05 — Subdomain</div>
+      <h1>Subdomain Setup</h1>
+
+      <h2>Create a Subdomain in cPanel</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Go to Domains</h4>
+            <p>cPanel → search <strong>Domains</strong> → click <strong>Create A New Domain</strong></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Enter Subdomain</h4>
+            <p>Type: <code>lms.yourdomain.com</code> — cPanel automatically sets the document root to <code>/lms</code></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Verify Document Root</h4>
+            <p>In the Domains list, confirm the Document Root shows <code>/your-folder-name</code> — this must match your Node.js Application root.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Verify Subdomain → Folder Mapping</h2>
+      <pre><code># cPanel → Domains
+# You should see:
+# lms.yourdomain.com  →  Document Root: /lms
+
+# This means your subdomain serves files from:
+# /home/yourusername/lms/</code></pre>
+
+      <div class="callout">
+        <strong>Key Rule</strong>
+        <p>Subdomain document root folder = Node.js application root folder = GitHub repo folder. All three must be the same folder.</p>
+      </div>
+    </section>
+
+    <!-- GIT VERSION CONTROL -->
+    <section class="doc-section" id="git-version-control">
+      <div class="section-tag">06 — Git on cPanel</div>
+      <h1>cPanel Git Version Control</h1>
+
+      <h2>Clone Your GitHub Repo to cPanel</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Open Git Version Control</h4>
+            <p>cPanel → search <strong>Git Version Control</strong> → click <strong>Create</strong></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Fill In Details</h4>
+            <pre><code>Clone URL: https://github.com/yourusername/your-repo.git
+Repository Path: /home/yourusername/your-app-folder
+Repository Name: your-repo-name</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Click Create</h4>
+            <p>cPanel clones the repo. You'll see a success notification when done.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>Deploy / Pull Updates</h2>
+      <p>After pushing new code to GitHub, pull it to cPanel:</p>
+      <pre><code># Option 1 — cPanel GUI
+# Git Version Control → Manage → Update from Remote → Deploy HEAD Commit
+
+# Option 2 — cPanel Terminal
+cd /home/yourusername/your-app-folder
+git pull origin main</code></pre>
+
+      <h2>Add .cpanel.yml for Auto Deploy</h2>
+      <p>Create this file in your project root so cPanel knows how to deploy:</p>
+      <pre><code># .cpanel.yml
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/yourusername/your-app-folder
+    - /bin/cp -R ./* $DEPLOYPATH</code></pre>
+
+      <h2>Force Pull (Overwrite Server Changes)</h2>
+      <pre><code>cd /home/yourusername/your-app-folder
+
+# Discard any server-side changes
+git fetch origin
+git reset --hard origin/main</code></pre>
+    </section>
+
+    <!-- PERMISSIONS -->
+    <section class="doc-section" id="permissions">
+      <div class="section-tag">07 — Permissions</div>
+      <h1>Fix Folder Permissions</h1>
+
+      <div class="callout warning">
+        <strong>⚠ Most Common Cause of 404</strong>
+        <p>When cPanel creates a Node.js app folder, permissions default to 700 (drwx------) — the web server cannot read it. Always fix permissions after setup.</p>
+      </div>
+
+      <h2>Understanding Linux Permissions</h2>
+      <table>
+        <tr><th>Permission</th><th>Meaning</th><th>Web Server Access</th></tr>
+        <tr><td><code>700 (drwx------)</code></td><td>Owner only</td><td>❌ Blocked</td></tr>
+        <tr><td><code>755 (drwxr-xr-x)</code></td><td>Owner + read for all</td><td>✅ Works</td></tr>
+        <tr><td><code>644 (-rw-r--r--)</code></td><td>Owner write + read for all</td><td>✅ Works</td></tr>
+      </table>
+
+      <h2>Fix Commands — Run After Every New Deployment</h2>
+      <pre><code># Fix the app folder
+chmod 755 /home/yourusername/your-app-folder
+
+# Fix key files
+chmod 644 /home/yourusername/your-app-folder/.htaccess
+chmod 644 /home/yourusername/your-app-folder/app.js
+
+# Fix all files recursively
+find /home/yourusername/your-app-folder -type f -exec chmod 644 {} \;
+find /home/yourusername/your-app-folder -type d -exec chmod 755 {} \;</code></pre>
+
+      <h2>Restart After Fixing</h2>
+      <pre><code># Via terminal
+touch /home/yourusername/your-app-folder/tmp/restart.txt
+
+# Or via cPanel
+# Node.js Selector → STOP → SAVE → RESTART</code></pre>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section class="doc-section" id="workflow">
+      <div class="section-tag">08 — Daily Workflow</div>
+      <h1>Push & Deploy Workflow</h1>
+
+      <h2>Every Day — 4 Commands</h2>
+      <pre><code># 1. Check what changed
+git status
+
+# 2. Stage all changes
+git add .
+
+# 3. Commit with message
+git commit -m "feat: describe what you changed"
+
+# 4. Push to GitHub
+git push origin main</code></pre>
+
+      <h2>After Pushing — Update cPanel</h2>
+      <pre><code># Option A — Via cPanel Terminal
+cd /home/yourusername/your-app-folder
+git pull origin main
+touch tmp/restart.txt
+
+# Option B — Via cPanel GUI
+# Git Version Control → your repo → Manage → Update from Remote
+# Node.js Selector → Restart</code></pre>
+
+      <h2>Good Commit Message Examples</h2>
+      <table>
+        <tr><th>Type</th><th>Example</th></tr>
+        <tr><td><code>feat:</code></td><td>feat: add user login page</td></tr>
+        <tr><td><code>fix:</code></td><td>fix: correct port configuration</td></tr>
+        <tr><td><code>update:</code></td><td>update: change welcome page text</td></tr>
+        <tr><td><code>docs:</code></td><td>docs: add README file</td></tr>
+        <tr><td><code>style:</code></td><td>style: update CSS colors</td></tr>
+      </table>
+
+      <h2>Working with Branches</h2>
+      <pre><code># Create a new branch for new features
+git checkout -b feature/new-dashboard
+
+# Work on your feature, then commit
+git add .
+git commit -m "feat: new dashboard layout"
+
+# Merge back to main when ready
+git checkout main
+git merge feature/new-dashboard
+git push origin main</code></pre>
+    </section>
+
+    <!-- CHEAT SHEET -->
+    <section class="doc-section" id="commands">
+      <div class="section-tag">09 — Reference</div>
+      <h1>Git Cheat Sheet</h1>
+
+      <h2>Essential Commands</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item">
+          <div class="cheat-cmd">git init</div>
+          <div class="cheat-desc">Initialize git in a folder</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git status</div>
+          <div class="cheat-desc">See what files changed</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git add .</div>
+          <div class="cheat-desc">Stage all changes</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git commit -m "msg"</div>
+          <div class="cheat-desc">Save a snapshot with message</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git push origin main</div>
+          <div class="cheat-desc">Upload to GitHub</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git pull origin main</div>
+          <div class="cheat-desc">Download latest from GitHub</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git clone &lt;url&gt;</div>
+          <div class="cheat-desc">Download a full repository</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git log --oneline</div>
+          <div class="cheat-desc">View commit history</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git branch -M main</div>
+          <div class="cheat-desc">Rename branch to main</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git remote -v</div>
+          <div class="cheat-desc">Show remote connections</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git reset --hard HEAD</div>
+          <div class="cheat-desc">Discard all local changes</div>
+        </div>
+        <div class="cheat-item">
+          <div class="cheat-cmd">git stash</div>
+          <div class="cheat-desc">Temporarily save changes</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TROUBLESHOOTING -->
+    <section class="doc-section" id="troubleshooting">
+      <div class="section-tag">10 — Troubleshooting</div>
+      <h1>Common Issues & Fixes</h1>
+
+      <h2>404 Not Found</h2>
+      <table>
+        <tr><th>Cause</th><th>Fix</th></tr>
+        <tr><td>Wrong folder permissions</td><td><code>chmod 755 /home/user/appfolder</code></td></tr>
+        <tr><td>Wrong Application URL</td><td>Node.js Selector → change to correct subdomain</td></tr>
+        <tr><td>App not running</td><td>Node.js Selector → Restart</td></tr>
+        <tr><td>Missing .htaccess</td><td>Stop app → Save → Restart to regenerate</td></tr>
+      </table>
+
+      <h2>Git Pull Error — Local Changes</h2>
+      <pre><code># Error: Your local changes would be overwritten by merge
+
+# Fix: discard server changes and force pull
+git fetch origin
+git reset --hard origin/main</code></pre>
+
+      <h2>SSH Not Working</h2>
+      <pre><code># Regenerate SSH key
+ssh-keygen -t ed25519 -C "your@email.com"
+
+# Copy key (Windows)
+type %USERPROFILE%\.ssh\id_ed25519.pub
+
+# Test connection
+ssh -T git@github.com</code></pre>
+
+      <h2>App Crashes on cPanel</h2>
+      <pre><code># Check error log
+cat /home/yourusername/appfolder/stderr.log
+
+# Check if node is running
+ps aux | grep node
+
+# Restart the app
+touch /home/yourusername/appfolder/tmp/restart.txt</code></pre>
+
+      <h2>Wrong Remote URL (HTTPS → SSH)</h2>
+      <pre><code># Switch from HTTPS to SSH
+git remote set-url origin git@github.com:username/repo.git
+
+# Verify
+git remote -v</code></pre>
+
+      <div class="callout success">
+        <strong>✓ Quick Checklist</strong>
+        <p>1. Folder permissions = 755 &nbsp;|&nbsp; 2. App URL = correct subdomain &nbsp;|&nbsp; 3. Startup file = app.js &nbsp;|&nbsp; 4. Use process.env.PORT &nbsp;|&nbsp; 5. App status = Running</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="doc-footer">
+  <p>GEBETA LMS Documentation &nbsp;·&nbsp; Built with Node.js &nbsp;·&nbsp; <a href="/">← Back to Home</a></p>
+</footer>
+
+<!-- SCROLL TO TOP -->
+<a href="#" class="scroll-top">↑</a>
+
+<script>
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.doc-section');
+  const links = document.querySelectorAll('.sidebar a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    links.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
