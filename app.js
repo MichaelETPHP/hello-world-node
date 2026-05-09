@@ -47,7 +47,7 @@ const homePage = `
   <div class="hero">
     <div class="hero-inner">
       <div class="tag">Learning Management System</div>
-      <h1>Welcome to<br><span>Gebeta</span> LMS</h1>
+      <h1>Welcome to<br><span>Gebeta</span> LMS - MAS</h1>
       <p>Your modern platform for learning,<br>teaching and growing together.</p>
       <div class="btn-group">
         <a href="#" class="btn btn-white">Get Started</a>
